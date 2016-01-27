@@ -9,6 +9,7 @@ import static org.hamcrest.core.Is.is;
 
 /**
  * Created by chris on 07.12.15.
+ * Test class for chekcing out Lorri.awesomeMathe() Method
  */
 public class VogelTest {
 
