@@ -8,7 +8,7 @@ import java.awt.*;
 import java.net.URL;
 
 /**
- * This is a tes class for learning maven
+ * This is a test class for learning maven
  * Created by chris on 07.12.15.
  */
 public class Lorri {
@@ -17,15 +17,10 @@ public class Lorri {
 
     @Parameter(names={"-legs", "-beine" }, description = "Anzahl der Beine", help = true)
     public Integer beine =  3;
-    @Parameter(names={"-color","-farbe"},description = "Farbe von Lorri", help = true)
+
     public final Color color;
 
-    /**
-     * Method for changing lorris Color
-     * @param color the RGB color which is to be set
-     */
     public Lorri(Color color) {
-
         this.color = color;
     }
 

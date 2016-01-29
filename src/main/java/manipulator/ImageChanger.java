@@ -7,7 +7,7 @@ import mmath.Vec2d;
 import java.io.File;
 
 /**
- * Klasse für die Bildbearbeitungs Methoden
+ * calss for the image changig methods
  * Created by chris on 14.01.16.
  */
 
@@ -84,7 +84,9 @@ public class ImageChanger {
     }
 
 
-
+    /**
+     *
+     */
     public void calculateData()
     {
         edit = new Array2d(raw);
