@@ -1,3 +1,4 @@
+import katzen.Tiger;
 import mmath.Array2d;
 
 import java.io.File;
@@ -7,10 +8,21 @@ import java.io.File;
  * Tester Class for the simple methods
  * Created by chris on 14.01.16.
  */
-public class MiniTester {
+public class MiniTester
+{
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
+
+        try
+        {
+            throw new Exception("Ich hab die falsche Endung entdeckt");
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         Array2d a = new Array2d(new File("/home/chris/Dokumente/MasterArbeit/Examples/Lorri1.png"));
 
@@ -42,6 +54,7 @@ public class MiniTester {
         return new Array2d(data, a.getOrigin(), a.getStep());
     }
 
+    Tiger t;
 
     /**
      * Methode zum Verrauschen der gegebenen Bilddatei bzw, des gegb. Datensatzes
@@ -53,7 +66,7 @@ public class MiniTester {
         double [][] data = a.getNorm();
         System.out.println("Bitte geben Sie einen Rausch Faktor ein (in %):");
 
-        //@Parameter(names={"-noiseFactor", "-rauschFaktor"},description = "gewuenschter Rauschfaktor", help= true)
+
         float noiseFact = new java.util.Scanner(System.in).nextFloat();
         for(int i=0;i<data.length;i++)
         {

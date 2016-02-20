@@ -12,64 +12,34 @@ import java.io.File;
  */
 
 
-public class ImageChanger {
-    Array2d raw;
-    Array2d edit;
+public class ImageChanger
+{
+    Array2d raw;  // raw Image, important for the GUI version
+    Array2d edit;   // editable Image, gets all the changes
 
     boolean invert = false;
     boolean noise = false;
     boolean rotate = false;
+    boolean blur = false;
+
+    int blurRadius = 3;
     float noiseFact = 0.0f;
 
 
-// Konstruktor:
+// Konstruktor#######################################
 
-
+    // creates a null Object wich does no damage if falsely edited
     public ImageChanger()
     {
         raw = new Array2d(new double[1][1], new Pos2d(), new Vec2d(1,1));
     }
 
-//	Methoden:
-
-    // Setter################################
-    public void setNoise(boolean noise)
-    {
-        this.noise = noise;
-    }
-
-
-    //Getter#################################
-    public void setInvert(boolean invert)
-    {
-        this.invert = invert;
-    }
-
-    public void setNoiseFactor(double noiseFactor)
-    {
-        noiseFact = (float) noiseFactor;
-    }
-
-    public void setRotate(boolean rotate)
-    {
-        this.rotate = rotate;
-    }
-
-    public Array2d getRawArray()
-    {
-        return raw;
-    }
-
-    public Array2d getEditArray()
-    {
-        return edit;
-    }
+//	Methoden#########################################
 
     /**
      * method for loading the picture file
      * @param f to be loaded file
      */
-
     public void loadA2d(File f)
     {
         raw = null;
@@ -85,7 +55,7 @@ public class ImageChanger {
 
 
     /**
-     *
+     * Method, which checks which treatments should be executed and executes them
      */
     public void calculateData()
     {
@@ -94,11 +64,12 @@ public class ImageChanger {
         if(invert) invert();
         if(noise) noise();
         if(rotate) rotate();
+        if(blur) blurSimple();
     }
 
     /**
      * Method for saving the edited data
-     * @param f target
+     * @param f target file
      */
     public void saveImage(File f)
     {
@@ -107,7 +78,7 @@ public class ImageChanger {
     }
 
     /**
-     * Methode zum invertieren der einzelnen Pixel-Intensitaeten
+     * Method to invert the intensity of the data points
      */
     private void invert()
     {
@@ -127,7 +98,8 @@ public class ImageChanger {
 
 
     /**
-     * Method for noising the editable Data
+     * Method for putting noise on the editable data
+     * Needs a noise gain factor
      */
     private void noise()
     {
@@ -150,7 +122,7 @@ public class ImageChanger {
     }
 
     /**
-     * Method for rotating the editable data about 90° to the right
+     * Method for rotating the editable data about 90° to the left
      */
     private void rotate()
     {
@@ -167,15 +139,103 @@ public class ImageChanger {
         edit.setData(dataHelp);
     }
 
+    // TODO blur with convolution erarbeiten!!
+    /**
+     * method for blurring data with a given blur radius
+     * This algorithm adds the blur iteratively to each data point
+     * No convolution!
+     *
+     */
+    private void blurSimple()
+    {
+        System.out.println("Blur!");
+        double[][] data = edit.getNorm();
+        int blurSQ = blurRadius * blurRadius;
+        double norm, sum;
+        int x, y;
+        boolean addValue;
 
+        for(int i = 0; i < data.length; i++)
+        {
+            for(int j = 0; j < data[i].length; j++)
+            {
+                norm = 0.0;
+                sum = 0.0;
+
+                for(int m = -blurRadius; m <= blurRadius; m++)
+                {
+                    for(int n = -blurRadius; n <= blurRadius; n++)
+                    {
+                        if(m*m + n*n <= blurSQ)
+                        {
+                            x = i+m;
+                            y = j+n;
+
+                            addValue = 	((x >= 0 && x < edit.getResX()) || edit.isSeamlessX()) &&
+                                    ((y >= 0 && y < edit.getResY()) || edit.isSeamlessY());
+
+                            if(addValue) {sum += edit.get(x, y); norm++;}
+                        }
+                    }
+                }
+
+                if(norm > 0.0) 	data[i][j] = sum / norm;
+                else			data[i][j] = edit.get(i, j);
+            }
+        }
+
+        edit.setData(data);
+
+    }
     /**
      * method for checking out if data is editable
-     * @return resolution of object.x and object.y
+     * @return True if data is editable
      */
     public boolean hasEditableData()
     {
         return raw.getResX() > 0 && raw.getResY() > 0;
     }
+
+
+
+    // Setter..........................................................................
+    public void setNoise(boolean noise)
+    {
+        this.noise = noise;
+    }
+
+    public void setNoiseFactor(double noiseFactor)
+    {
+        noiseFact = (float) noiseFactor;
+    }
+
+    public void setInvert(boolean invert)
+    {
+        this.invert = invert;
+    }
+
+    public void setRotate(boolean rotate)
+    {
+        this.rotate = rotate;
+    }
+
+    public void setBlur(boolean blur) {this.blur = blur;}
+
+    public void setBlurRadius (int blurRadius){this.blurRadius = blurRadius;}
+
+    //Getter..........................................................................
+
+
+    public Array2d getRawArray()
+    {
+        return raw;
+    }
+
+    public Array2d getEditArray()
+    {
+        return edit;
+    }
+
 
 
 
